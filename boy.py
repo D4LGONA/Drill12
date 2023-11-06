@@ -212,6 +212,9 @@ class Boy:
     # fill here
     def get_bb(self):
         if self.state_machine.cur_state == Sleep:  # dir;;
-            return self.x - 70, self.y - 40, self.x + 10, self.y
+            if self.face_dir == 1:
+                return self.x - 80, self.y - 40, self.x + 20, self.y
+            else:
+                return self.x - 20, self.y - 40, self.x + 80, self.y
         else:
             return self.x - 20, self.y - 50, self.x + 20, self.y + 50
