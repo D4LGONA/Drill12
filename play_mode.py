@@ -24,6 +24,7 @@ def handle_events():
 def init():
     global grass
     global boy
+    global balls
 
     running = True
 
@@ -34,8 +35,8 @@ def init():
     game_world.add_object(boy, 1)
 
     # fill here
-
-
+    balls = [Ball(random.randint(100, 1600-100), 60, 0) for _ in range(50)]
+    game_world.add_objects(balls, 1)
 
 def finish():
     game_world.clear()
@@ -45,6 +46,9 @@ def finish():
 def update():
     game_world.update()
     # fill here
+    for ball in balls:
+        if game_world.collide(boy, ball):
+            print('공과 소년이 부딪힘!')
 
 def draw():
     clear_canvas()
