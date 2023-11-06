@@ -46,9 +46,12 @@ def finish():
 def update():
     game_world.update()
     # fill here
-    for ball in balls:
+    for ball in balls.copy(): # 복사 안하면 위험한 접근 임..
         if game_world.collide(boy, ball):
             print('공과 소년이 부딪힘!')
+            boy.ball_count += 1 # 소년 관점의 충돌 처리
+            game_world.remove_object(ball) # 공을
+            balls.remove(ball) # 제거
 
 def draw():
     clear_canvas()
