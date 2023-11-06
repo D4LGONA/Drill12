@@ -1,6 +1,10 @@
 objects = [[] for _ in range(4)]
 
 # fill here
+collision_pairs = {} # {'boy:ball' : [[boy], [balls]]}
+
+
+
 
 def add_object(o, depth = 0):
     objects[depth].append(o)
@@ -21,12 +25,30 @@ def render():
             o.draw()
 
 # fill here
+def add_collision_pair(group, a = None, b = None): # a와 b 사이에 충돌 검사가 필요하다
+    if group not in collision_pairs:
+        print(f'new group {group} added...')
+        collision_pairs[group] = [ [], [] ]
+    if a:
+        collision_pairs[group][0].append(a)
+    if b:
+        collision_pairs[group][1].append(b)
+
+
+def remove_collision_object(o):
+    for pairs in collision_pairs.values():
+        if o in pairs[0]:
+            pairs[0].remove(o)
+        if o in pairs[1]:
+            pairs[1].remove(o)
 
 
 def remove_object(o):
     for layer in objects:
         if o in layer:
             layer.remove(o)
+            remove_collision_object(o)
+            del o # 메모리도 날려 주도록
             return
     raise ValueError('Cannot delete non existing object')
 
@@ -48,3 +70,13 @@ def collide(a, b):
     if ba > tb: return False
 
     return True
+
+
+def handle_collisions():
+    for group, pairs in collision_pairs.items():
+        for a in pairs[0]:
+            for b in pairs[1]:
+                if collide(a, b): # a와 b에게 충돌 처리 알아서 하라고 알려줌
+                    a.handle_collision(group, a)
+                    b.handle_collision(group, b)
+    return None

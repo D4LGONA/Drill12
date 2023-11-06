@@ -38,6 +38,22 @@ def init():
     balls = [Ball(random.randint(100, 1600-100), 60, 0) for _ in range(50)]
     game_world.add_objects(balls, 1)
 
+    # 충돌검사 필요 상황 등록
+    game_world.add_collision_pair('boy:ball', boy, None) # boy가 여러번 등록되는 것 방지.
+    for ball in balls:
+        game_world.add_collision_pair('boy:ball', None, ball)
+
+    zombies = [Zombie() for _ in range(5)]
+    game_world.add_objects(zombies, 1)
+    for ball in balls:
+        game_world.add_collision_pair('ball:zombie', ball, None)
+    for zombie in zombies:
+        game_world.add_collision_pair('ball:zombie', None, zombie)
+
+    game_world.add_collision_pair('boy:zombie', boy, None)  # boy가 여러번 등록되는 것 방지.
+    for zombie in zombies:
+        game_world.add_collision_pair('boy:zombie', None, zombie)
+
 def finish():
     game_world.clear()
     pass
@@ -46,12 +62,7 @@ def finish():
 def update():
     game_world.update()
     # fill here
-    for ball in balls.copy(): # 복사 안하면 위험한 접근 임..
-        if game_world.collide(boy, ball):
-            print('공과 소년이 부딪힘!')
-            boy.ball_count += 1 # 소년 관점의 충돌 처리
-            game_world.remove_object(ball) # 공을
-            balls.remove(ball) # 제거
+    game_world.handle_collisions()
 
 def draw():
     clear_canvas()
